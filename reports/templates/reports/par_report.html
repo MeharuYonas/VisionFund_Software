@@ -1,0 +1,18 @@
+<h2>Portfolio at Risk (PAR)</h2>
+
+<p>PAR Ratio: {{ par_ratio }}%</p>
+
+<table border="1">
+<tr>
+    <th>Customer</th>
+    <th>Outstanding</th>
+    <th>Due Date</th>
+</tr>
+{% for loan in risky_loans %}
+<tr>
+    <td>{{ loan.customer }}</td>
+    <td>{{ loan.balance }}</td>
+    <td>{{ loan.due_date }}</td>
+</tr>
+{% endfor %}
+</table>

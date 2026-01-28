@@ -1,0 +1,28 @@
+<h1>All Loans</h1>
+<a href="{% url 'loan_apply' %}">Apply New Loan</a>
+<table border="1">
+<tr>
+    <th>Customer</th>
+    <th>Amount</th>
+    <th>Interest Rate</th>
+    <th>Status</th>
+    <th>Total Payable</th>
+    <th>Installment</th>
+    <th>Actions</th>
+</tr>
+{% for loan in loans %}
+<tr>
+    <td>{{ loan.customer.full_name }}</td>
+    <td>{{ loan.amount }}</td>
+    <td>{{ loan.interest_rate }}%</td>
+    <td>{{ loan.status }}</td>
+    <td>{{ loan.total_payable }}</td>
+    <td>{{ loan.installment_amount }}</td>
+    <td>
+        {% if loan.status == 'pending' %}
+        <a href="{% url 'loan_approve' loan.pk %}">Approve/Reject</a>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+</table>

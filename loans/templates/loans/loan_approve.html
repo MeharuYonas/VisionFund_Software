@@ -1,0 +1,12 @@
+<h1>Approve/Reject Loan</h1>
+<p>Customer: {{ loan.customer.full_name }}</p>
+<p>Amount: {{ loan.amount }}</p>
+<p>Interest Rate: {{ loan.interest_rate }}%</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" name="action" value="approve">Approve</button>
+    <button type="submit" name="action" value="reject">Reject</button>
+</form>
+
+<a href="{% url 'loan_list' %}">Back</a>

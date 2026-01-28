@@ -1,0 +1,19 @@
+<h2>Loan Portfolio</h2>
+
+<table border="1">
+<tr>
+    <th>Customer</th>
+    <th>Amount</th>
+    <th>Outstanding</th>
+</tr>
+{% for loan in loans %}
+<tr>
+    <td>{{ loan.customer }}</td>
+    <td>{{ loan.amount }}</td>
+    <td>{{ loan.balance }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<p>Total Disbursed: {{ total_disbursed }}</p>
+<p>Outstanding Balance: {{ outstanding }}</p>

@@ -1,0 +1,87 @@
+<h1>Loan Repayment Schedule (Mortgage/Amortization)</h1>
+{% for schedule in schedules %}
+    <h2>Borrower: {{ schedule.loan.borrower.username }} | Loan ID: {{ schedule.loan.id }}</h2>
+    <table border="1" cellspacing="0" cellpadding="5">
+        <tr>
+            <th>Due Date</th>
+            <th>Monthly Payment</th>
+            <th>Principal Paid</th>
+            <th>Interest Paid</th>
+            <th>Remaining Balance</th>
+            <th>Status</th>
+        </tr>
+        {% for repayment in schedule.repayments %}
+        <tr>
+            {% comment %}
+            For display purposes, calculate principal & interest proportionally
+            {% endcomment %}
+            <td>{{ repayment.due_date }}</td>
+            <td>{{ repayment.amount_due }}</td>
+            <td>{{ repayment.amount_due|floatformat:2|add:"-placeholder_interest" }}</td>
+            <td>placeholder_interest</td>
+            <td>placeholder_balance</td>
+            <td>
+                {% if repayment.is_overdue %}
+                    <span style="color:red;">Overdue</span>
+                {% elif repayment.amount_paid >= repayment.amount_due %}
+                    Paid
+                {% else %}
+                    Pending
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endfor %}
+
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name__in=['Manager','Auditor','Cashier']).exists())
+def loan_repayment_mortgage_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="loan_repayment_mortgage.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Borrower','Loan ID','Due Date','Monthly Payment','Principal Paid','Interest Paid','Remaining Balance','Status'])
+
+    loans = Loan.objects.filter(status='Active')
+    for loan in loans:
+        balance = float(loan.principal)
+        monthly_payment = loan.mortgage_monthly_payment()
+        monthly_rate = float(loan.interest_rate)/12/100
+
+        for i in range(loan.term_months):
+            interest = round(balance * monthly_rate, 2)
+            principal_paid = round(monthly_payment - interest, 2)
+            balance = round(balance - principal_paid, 2)
+            status = "Pending"
+            writer.writerow([loan.borrower.username, loan.id, loan.start_date + timedelta(days=30*i), monthly_payment, principal_paid, interest, balance, status])
+
+    return response
+
+    @login_required
+@user_passes_test(lambda u: u.groups.filter(name__in=['Manager','Auditor','Cashier']).exists())
+def loan_repayment_mortgage_pdf(request):
+    loans = Loan.objects.filter(status='Active')
+    schedules = []
+
+    for loan in loans:
+        balance = float(loan.principal)
+        monthly_payment = loan.mortgage_monthly_payment()
+        monthly_rate = float(loan.interest_rate)/12/100
+        repayments = []
+
+        for i in range(loan.term_months):
+            interest = round(balance * monthly_rate, 2)
+            principal_paid = round(monthly_payment - interest, 2)
+            balance = round(balance - principal_paid, 2)
+            due_date = loan.start_date + timedelta(days=30*i)
+            repayments.append({
+                'due_date': due_date,
+                'monthly_payment': monthly_payment,
+                'principal_paid': principal_paid,
+                'interest_paid': interest,
+                'remaining_balance': balance,
+            })
+        schedules.append({'loan': loan, 'repayments': repayments})
+
+    context = {'schedules': schedules}
+    return export_pdf('loans/loan_repayment_mortgage_pdf.html', context, filename='loan_repayment_mortgage.pdf')

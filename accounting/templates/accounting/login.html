@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VisionFund Login</title>
+    <style>
+        body {font-family: Arial; background:#f7f7f7;}
+        .login-box {width: 400px; margin: 100px auto; padding: 30px; background:white; border-radius:8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.2);}
+        input {width: 100%; padding:10px; margin:10px 0; border-radius:4px; border:1px solid #ccc;}
+        button {width: 100%; padding:10px; background:#007bff; color:white; border:none; border-radius:4px; cursor:pointer;}
+        button:hover {background:#0056b3;}
+        .messages {color:red; margin-bottom:10px;}
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>VisionFund Login</h2>
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.username }}
+            {{ form.password }}
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>

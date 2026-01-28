@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reports Dashboard</title>
+    <style>
+        table {border-collapse: collapse; width: 100%; margin-bottom: 20px;}
+        th, td {border: 1px solid #000; padding: 8px; text-align: left;}
+        th {background-color: #f2f2f2;}
+        h2 {margin-top: 30px;}
+        .buttons {margin-bottom: 20px;}
+        .buttons a {margin-right: 10px; padding: 8px 12px; background: #007bff; color: white; text-decoration: none; border-radius: 4px;}
+        .buttons a:hover {background: #0056b3;}
+    </style>
+</head>
+<body>
+    <h1>VisionFund Reports Dashboard</h1>
+
+    <!-- Daily Report -->
+    <h2>Daily Financial Report – {{ today }}</h2>
+    <div class="buttons">
+        <a href="{% url 'daily_report_csv' %}">Export CSV</a>
+        <a href="{% url 'daily_report_pdf' %}">Export PDF</a>
+    </div>
+    <table>
+        <tr><th>Transaction Type</th><th>Total Amount</th></tr>
+        {% for item in daily_summary %}
+        <tr>
+            <td>{{ item.transaction_type }}</td>
+            <td>{{ item.total }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Monthly Report -->
+    <h2>Monthly Financial Report – {{ month }}/{{ year }}</h2>
+    <div class="buttons">
+        <a href="{% url 'monthly_report_csv' %}">Export CSV</a>
+        <a href="{% url 'monthly_report_pdf' %}">Export PDF</a>
+    </div>
+    <table>
+        <tr><th>Transaction Type</th><th>Total Amount</th></tr>
+        {% for item in monthly_summary %}
+        <tr>
+            <td>{{ item.transaction_type }}</td>
+            <td>{{ item.total }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Cash Reconciliation -->
+    <h2>Cash Reconciliation – {{ today }}</h2>
+    <div class="buttons">
+        {% if user.groups.filter(name='Cashier').exists %}
+            <a href="{% url 'cash_reconciliation_csv' %}">Export CSV</a>
+            <a href="{% url 'cash_reconciliation_pdf' %}">Export PDF</a>
+        {% endif %}
+    </div>
+    <table>
+        <tr><th>Expected Cash</th><td>{{ expected_cash }}</td></tr>
+    </table>
+
+    <!-- Audit Trail -->
+    <h2>Audit Trail – Latest 10 Actions</h2>
+    <div class="buttons">
+        <a href="{% url 'audit_trail_csv' %}">Export CSV</a>
+        <a href="{% url 'audit_trail_pdf' %}">Export PDF</a>
+    </div>
+    <table>
+        <tr>
+            <th>User</th><th>Action</th><th>Description</th><th>Amount</th><th>Timestamp</th>
+        </tr>
+        {% for log in audit_logs %}
+        <tr>
+            <td>{{ log.user.username }}</td>
+            <td>{{ log.get_action_display }}</td>
+            <td>{{ log.description }}</td>
+            <td>{{ log.amount }}</td>
+            <td>{{ log.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>
+
+<h2>Loan Repayment Schedule</h2>
+<div class="buttons">
+    <a href="{% url 'loan_repayment_schedule' %}">View Schedule</a>
+    <a href="{% url 'loan_repayment_csv' %}">Export CSV</a>
+    <a href="{% url 'loan_repayment_pdf' %}">Export PDF</a>
+</div>
+
+<h2>Loan Repayment Schedule (Mortgage)</h2>
+<div class="buttons">
+    <a href="{% url 'loan_repayment_mortgage' %}">View Schedule</a>
+    <a href="{% url 'loan_repayment_mortgage_csv' %}">Export CSV</a>
+    <a href="{% url 'loan_repayment_mortgage_pdf' %}">Export PDF</a>
+</div>

@@ -1,0 +1,14 @@
+<h2>Daily Financial Report – {{ date }}</h2>
+
+<table border="1">
+    <tr>
+        <th>Transaction Type</th>
+        <th>Total Amount</th>
+    </tr>
+    {% for item in report %}
+    <tr>
+        <td>{{ item.transaction_type }}</td>
+        <td>{{ item.total }}</td>
+    </tr>
+    {% endfor %}
+</table>

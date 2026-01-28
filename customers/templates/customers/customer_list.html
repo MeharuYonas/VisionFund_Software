@@ -1,0 +1,52 @@
+<h1>Customer List</h1>
+<a href="{% url 'customer_create' %}">Add New Customer</a>
+<table border="1">
+    <tr>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Active</th>
+        <th>Actions</th>
+    </tr>
+    {% for customer in customers %}
+    <tr>
+        <td>{{ customer.full_name }}</td>
+        <td>{{ customer.email }}</td>
+        <td>{{ customer.phone }}</td>
+        <td>{{ customer.is_active }}</td>
+        <td>
+            <a href="{% url 'customer_update' customer.pk %}">Edit</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h1>Customer List</h1>
+<table border="1" cellspacing="0" cellpadding="5">
+    <tr>
+        <th>Series Number</th>
+        <th>ID</th>
+        <th>Full Name</th>
+        <th>Sex</th>
+        <th>Age</th>
+        <th>Department</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Date Registered</th>
+        <th>Responsibility</th>
+    </tr>
+    {% for customer in customers %}
+    <tr>
+        <td>{{ customer.series_number }}</td>
+        <td>{{ customer.national_id }}</td>
+        <td>{{ customer.full_name }}</td>
+        <td>{{ customer.get_sex_display }}</td>
+        <td>{{ customer.age }}</td>
+        <td>{{ customer.department }}</td>
+        <td>{{ customer.phone }}</td>
+        <td>{{ customer.email }}</td>
+        <td>{{ customer.date_registered }}</td>
+        <td>{{ customer.responsibility }}</td>
+    </tr>
+    {% endfor %}
+</table>

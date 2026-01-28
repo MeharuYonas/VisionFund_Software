@@ -1,0 +1,20 @@
+<h2>Savings Report</h2>
+
+<table border="1">
+<tr>
+    <th>Customer</th>
+    <th>Balance</th>
+    <th>Type</th>
+</tr>
+{% for s in savings %}
+<tr>
+    <td>{{ s.customer }}</td>
+    <td>{{ s.balance }}</td>
+    <td>{{ s.saving_type }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h3>Total Savings: {{ total_savings }}</h3>
+
+<a href="{% url 'export_savings_csv' %}">Export CSV</a>
