@@ -25,11 +25,7 @@ SECRET_KEY = 'django-insecure-59*gt^!%bogf*=o079tr&_z5=wvb77i0f%a-%6em)1h&%8@q^s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    'visionfund-software.onrender.com',
-    'localhost',
-    '127.0.0.1',
-]
+ALLOWED_HOSTS = ['visionfund-software-inm1.onrender.com', 'localhost', '127.0.0.1']
 
 
 
