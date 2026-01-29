@@ -26,9 +26,9 @@ SECRET_KEY = 'django-insecure-59*gt^!%bogf*=o079tr&_z5=wvb77i0f%a-%6em)1h&%8@q^s
 DEBUG = False
 
 ALLOWED_HOSTS = [
+    'visionfund-software.onrender.com',
     'localhost',
     '127.0.0.1',
-    '.onrender.com',
 ]
 
 
@@ -154,3 +154,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://visionfund-software.onrender.com',
+]
