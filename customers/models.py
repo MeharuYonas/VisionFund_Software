@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 User = get_user_model()
-
 
 class Customer(models.Model):
     user = models.OneToOneField(
@@ -25,5 +25,10 @@ class Customer(models.Model):
         if self.user:
             return self.user.username
         return self.full_name
-
-
+    
+user = models.OneToOneField(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.CASCADE,
+    null=True,
+    blank=True
+)

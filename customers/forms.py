@@ -2,6 +2,9 @@ from django import forms
 from django.forms.widgets import DateInput
 from django.contrib.auth.models import User
 from .models import Customer
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class CustomerForm(forms.ModelForm):
     # Fields from the related User model
@@ -42,17 +45,31 @@ class CustomerForm(forms.ModelForm):
             self.fields['last_name'].initial = self.instance.user.last_name
             self.fields['email'].initial = self.instance.user.email
 
+class CustomerForm(forms.ModelForm):
+
     def save(self, commit=True):
-        # Save the Customer model first, without committing
         customer = super().save(commit=False)
 
-        # Save the User model fields
-        user = customer.user
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
-        user.email = self.cleaned_data['email']
+        # CREATE USER if not exists
+        user = getattr(customer, "user", None)
+
+        if user is None:
+            user = User.objects.create_user(
+                username=self.cleaned_data['email'],
+                email=self.cleaned_data['email'],
+                password=User.objects.make_random_password()
+            )
+
+        # UPDATE USER FIELDS
+        user.first_name = self.cleaned_data.get('first_name')
+        user.last_name = self.cleaned_data.get('last_name')
+        user.email = self.cleaned_data.get('email')
+        user.save()
+
+        # LINK USER TO CUSTOMER
+        customer.user = user
 
         if commit:
-            user.save()      # Save User first
-            customer.save()  # Then save Customer
+            customer.save()
+
         return customer
